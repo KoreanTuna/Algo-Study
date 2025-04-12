@@ -17,7 +17,6 @@ var hash2 = new Map();
 hash.forEach((v, i) => {
   if (hash2.has(v)) {
     if (hash2.get(v) > BigInt(i)) {
-      // 제가 조사하다보니까 js에서 큰 숫자는 따로 BigInt를 이용해야한다네요!
       hash2.set(v, BigInt(i));
     }
   } else {
