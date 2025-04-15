@@ -1,25 +1,31 @@
-const input = require("fs").readFileSync("/dev/stdin").toString().trim().split(/\s/);
-const n = +input[0];
-const m = +input[1];
-const arr = input.slice(2).map(v => +v);
-const pkgPrice = [];
-const pcPrice = [];
+const fs = require("fs");
 
-for (let i=0; i<m; i++) {
-    pkgPrice.push(arr[2*i]);
-    pcPrice.push(arr[2*i+1]);
+const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
+const input = fs.readFileSync(filePath).toString().trim().split("\n");
+
+let [requiredStringCount, brandCount] = input[0].split(" ").map(Number);
+
+let minPckPrice = 1001;
+let minEachPrice = 1001;
+for (let i = 1; i <= brandCount; i++) {
+  let [package, each] = input[i].split(" ").map(Number);
+  minPckPrice = Math.min(minPckPrice, package);
+  minEachPrice = Math.min(minEachPrice, each);
 }
 
-const pkgMin = pkgPrice.reduce((acc, v) => acc < v ? acc : v, 1000);
-const pcMin = pcPrice.reduce((acc, v) => acc < v ? acc : v, 1000);
-const pkgCount = Math.floor(n/6);
-const pcCount = n-6*pkgCount;
-let cost;
+let pkgCount = Math.floor(requiredStringCount / 6);
+let remainedEachCount = requiredStringCount - 6 * pkgCount;
 
-if (pkgMin/6 < pcMin) {
-    cost = pkgCount*pkgMin + (pcCount*pcMin < pkgMin ? pcCount*pcMin : pkgMin);
+let cost = 0;
+
+if (minPckPrice / 6 < minEachPrice) {
+  cost =
+    pkgCount * minPckPrice +
+    (remainedEachCount * minEachPrice < minPckPrice
+      ? remainedEachCount * minEachPrice
+      : minPckPrice);
 } else {
-    cost = n*pcMin;
+  cost = requiredStringCount * minEachPrice;
 }
 
 console.log(cost);
